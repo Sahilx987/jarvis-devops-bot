@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 # 🤖 Jarvis DevOps Bot
 
 > An AI-powered Telegram bot built with Python and Google Gemini, deployed on AWS EC2 with fully automated CI/CD, Infrastructure as Code, and real-time cloud monitoring.
@@ -333,3 +334,208 @@ Time: 2026-05-09 18:30 UTC
 ## 📄 License
 
 This project is for portfolio and learning purposes.
+=======
+# 🤖 Jarvis DevOps Bot
+
+> An AI-powered Telegram bot built with Python and Google Gemini, deployed on AWS EC2 with fully automated CI/CD, Infrastructure as Code, and real-time cloud monitoring.
+
+![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python)
+![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker)
+![AWS](https://img.shields.io/badge/AWS-EC2%20%7C%20Lambda%20%7C%20SNS%20%7C%20CloudWatch-FF9900?logo=amazonaws)
+![Terraform](https://img.shields.io/badge/IaC-Terraform-7B42BC?logo=terraform)
+![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=githubactions)
+
+---
+
+## 📌 Project Overview
+
+**Jarvis DevOps Bot** is a personal DevOps portfolio project that demonstrates real-world cloud engineering practices. It combines an AI-powered Telegram chatbot with automated deployment pipelines, infrastructure provisioning, and cloud-native monitoring.
+
+The project covers the full DevOps lifecycle — from writing code to containerizing it, deploying it automatically to the cloud, and monitoring it with real-time alerts.
+
+**Key highlight:** Every `git push` to the `master` branch automatically rebuilds and redeploys the Docker container on AWS EC2 — no manual SSH required.
+
+---
+
+## 🏗️ Architecture
+Developer (git push)
+│
+▼
+┌─────────────────────┐
+│   GitHub Actions    │  ← CI/CD Pipeline
+│   CI/CD Workflow    │
+└────────┬────────────┘
+│ SSH deploy
+▼
+┌─────────────────────┐
+│     AWS EC2         │
+│  Ubuntu Instance    │
+│  ┌───────────────┐  │
+│  │ Docker        │  │
+│  │ (Jarvis Bot)  │  │
+│  └───────────────┘  │
+└────────┬────────────┘
+│ Metrics
+▼
+┌─────────────────────┐
+│  AWS CloudWatch     │
+└────────┬────────────┘
+│ Alarm
+▼
+┌─────────────────────┐
+│     AWS SNS         │
+└────────┬────────────┘
+│ Invoke
+▼
+┌─────────────────────┐
+│   AWS Lambda        │
+└────────┬────────────┘
+│ Send alert
+▼
+┌─────────────────────┐
+│  Telegram Alert     │
+└─────────────────────┘
+
+---
+
+## ✨ Features
+
+- **AI Chatbot** — Powered by Google Gemini API; responds to natural language queries via Telegram
+- **Dockerized Deployment** — Runs inside a Docker container for consistency across environments
+- **Automated CI/CD** — GitHub Actions pipeline SSHes into EC2, rebuilds and restarts container on every push
+- **Infrastructure as Code** — EC2, security groups, and IAM roles provisioned using Terraform
+- **CloudWatch Monitoring** — EC2 metrics monitored with threshold-based alarms
+- **Real-time Alerting** — SNS triggers Lambda which sends instant Telegram notifications on any alarm
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Technology |
+|---|---|
+| Language | Python 3.12 |
+| Bot Framework | python-telegram-bot |
+| AI Model | Google Gemini API |
+| Containerization | Docker |
+| CI/CD | GitHub Actions |
+| Cloud | AWS (EC2, Lambda, SNS, CloudWatch) |
+| IaC | Terraform |
+| OS | Ubuntu (EC2) |
+
+---
+
+## 📁 Repository Structure
+jarvis-devops-bot/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml
+├── handlers/
+│   └── ai_chat.py
+├── services/
+│   └── gemini_service.py
+├── bot.py
+├── config.py
+├── requirements.txt
+├── Dockerfile
+├── .dockerignore
+├── .gitignore
+└── README.md
+
+---
+
+## ⚙️ Setup Instructions
+
+### Prerequisites
+- AWS account with EC2 access
+- Telegram Bot Token (from [@BotFather](https://t.me/botfather))
+- Google Gemini API Key
+- Docker installed on EC2
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Sahilx987/jarvis-devops-bot.git
+cd jarvis-devops-bot
+```
+
+### 2. GitHub Actions Secrets Setup
+
+| Secret Name | Description |
+|---|---|
+| `TELEGRAM_BOT_TOKEN` | Your Telegram bot token |
+| `GEMINI_API_KEY` | Google Gemini API key |
+| `EC2_HOST` | Public IP of EC2 instance |
+| `EC2_USER` | SSH username (e.g. `ubuntu`) |
+| `EC2_SSH_KEY` | Private SSH key contents |
+
+### 3. Run Locally
+
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Create .env file
+echo "BOT_TOKEN=your_token" > .env
+echo "GEMINI_API_KEY=your_key" >> .env
+
+python bot.py
+```
+
+### 4. Run with Docker
+
+```bash
+docker build -t jarvis-bot .
+docker run -d \
+  -e BOT_TOKEN=your_token \
+  -e GEMINI_API_KEY=your_key \
+  --name jarvis-bot \
+  jarvis-bot
+```
+
+---
+
+## 🔄 CI/CD Pipeline
+
+Every push to `master` triggers the GitHub Actions workflow:
+git push → GitHub Actions → SSH into EC2 → git pull → docker build → docker restart
+
+All secrets are stored in GitHub Actions Secrets — never in code.
+
+---
+
+## 📊 Monitoring & Alerting
+
+**CloudWatch → SNS → Lambda → Telegram**
+
+1. CloudWatch monitors EC2 CPU, memory, disk
+2. Alarm triggers when threshold is crossed
+3. SNS topic receives the notification
+4. Lambda function sends Telegram alert instantly
+
+---
+
+## 🔐 Security Practices
+
+- All secrets in GitHub Actions Secrets
+- `.env` excluded via `.gitignore`
+- SSH key-based authentication only
+- IAM role follows least-privilege principle
+
+---
+
+## 🚀 Future Improvements
+
+- [ ] Add `docker-compose.yml`
+- [ ] Use AWS Secrets Manager instead of GitHub Secrets
+- [ ] Add automated rollback on deployment failure
+- [ ] Add unit tests with `pytest`
+- [ ] Use ECR for Docker image storage
+
+---
+
+## 👤 Author
+
+**Sahil**
+- GitHub: [@Sahilx987](https://github.com/Sahilx987)
+>>>>>>> Stashed changes
