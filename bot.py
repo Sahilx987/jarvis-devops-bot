@@ -25,6 +25,11 @@ from telegram.ext import (
 from config import BOT_TOKEN
 from handlers.ai_chat import ai_chat
 
+from config import BOT_TOKEN
+if not BOT_TOKEN:
+    logger.critical("BOT_TOKEN is not set! Exiting.")
+    sys.exit(1)
+
 
 async def start(update, context):
 
