@@ -539,3 +539,289 @@ All secrets are stored in GitHub Actions Secrets — never in code.
 **Sahil**
 - GitHub: [@Sahilx987](https://github.com/Sahilx987)
 >>>>>>> Stashed changes
+# 🤖 Jarvis DevOps Bot
+
+> An AI-powered Telegram bot built with Python and Google Gemini, deployed on AWS EC2 with fully automated CI/CD, Infrastructure as Code, and real-time cloud monitoring.
+
+![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python)
+![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker)
+![AWS](https://img.shields.io/badge/AWS-EC2%20%7C%20Lambda%20%7C%20SNS%20%7C%20CloudWatch-FF9900?logo=amazonaws)
+![Terraform](https://img.shields.io/badge/IaC-Terraform-7B42BC?logo=terraform)
+![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=githubactions)
+
+---
+
+## 📌 Project Overview
+
+**Jarvis DevOps Bot** is a personal DevOps portfolio project that demonstrates real-world cloud engineering practices. It combines an AI-powered Telegram chatbot with automated deployment pipelines, infrastructure provisioning, and cloud-native monitoring.
+
+The project covers the full DevOps lifecycle — from writing code to containerizing it, deploying it automatically to the cloud, and monitoring it with real-time alerts.
+
+**Key highlight:** Every `git push` to the `master` branch automatically rebuilds and redeploys the Docker container on AWS EC2 — no manual SSH required.
+
+---
+
+## 🏗️ Architecture
+
+```mermaid
+flowchart TD
+    A([👨‍💻 Developer]) -->|git push| B[GitHub Repository]
+    B --> C[⚙️ GitHub Actions\nCI/CD Pipeline]
+    C -->|SSH Deploy| D
+
+    subgraph AWS ["☁️ AWS Cloud"]
+        D[🖥️ EC2 Ubuntu Instance]
+        D --> E[🐳 Docker Container\nJarvis Bot]
+        E -->|Metrics| F[📊 CloudWatch\nCPU · Memory · Disk]
+        F -->|Alarm Trigger| G[📢 SNS Topic]
+        G -->|Invoke| H[⚡ Lambda Function]
+    end
+
+    subgraph External ["🌐 External Services"]
+        I[🤖 Google Gemini API]
+        J[📱 Telegram]
+    end
+
+    E <-->|AI Responses| I
+    E <-->|User Messages| J
+    H -->|Alert Message| J
+
+    subgraph IaC ["🏗️ Terraform IaC"]
+        T1[EC2 Instance]
+        T2[Security Groups]
+        T3[IAM Roles]
+        T4[CloudWatch Alarms]
+    end
+
+    IaC -.->|Provisions| AWS
+```
+
+---
+
+## ✨ Features
+
+- **AI Chatbot** — Powered by Google Gemini API; responds to natural language queries via Telegram
+- **Dockerized Deployment** — Runs inside a Docker container for consistency across environments
+- **Automated CI/CD** — GitHub Actions pipeline SSHes into EC2, rebuilds and restarts container on every push
+- **Infrastructure as Code** — EC2, security groups, and IAM roles provisioned using Terraform
+- **CloudWatch Monitoring** — EC2 metrics (CPU, memory, disk) monitored with threshold-based alarms
+- **Real-time Alerting** — SNS triggers a Lambda function which sends instant Telegram notifications on any alarm
+- **Health Check** — Docker container health monitored via `HEALTHCHECK` instruction
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Technology |
+|---|---|
+| Language | Python 3.12 |
+| Bot Framework | python-telegram-bot |
+| AI Model | Google Gemini API |
+| Containerization | Docker |
+| CI/CD | GitHub Actions |
+| Cloud | AWS (EC2, Lambda, SNS, CloudWatch) |
+| IaC | Terraform |
+| OS | Ubuntu (EC2) |
+| Version Control | Git + GitHub |
+
+---
+
+## 📁 Repository Structure
+
+```
+jarvis-devops-bot/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml          # GitHub Actions CI/CD pipeline
+├── handlers/
+│   └── ai_chat.py              # Telegram message handling logic
+├── services/
+│   └── gemini_service.py       # Google Gemini API integration
+├── terraform/
+│   ├── main.tf                 # EC2, SG, IAM resources
+│   ├── variables.tf
+│   └── outputs.tf
+├── lambda/
+│   └── alert_handler.py        # SNS → Telegram alert function
+├── bot.py                      # Main bot entry point
+├── config.py                   # Configuration and secret loader
+├── requirements.txt            # Python dependencies
+├── Dockerfile                  # Container definition
+├── .dockerignore
+├── .gitignore
+└── README.md
+```
+
+---
+
+## ⚙️ Setup Instructions
+
+### Prerequisites
+
+- AWS account with EC2 access
+- Telegram Bot Token — from [@BotFather](https://t.me/botfather)
+- Google Gemini API Key
+- Terraform installed locally
+- Docker installed on EC2
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Sahilx987/jarvis-devops-bot.git
+cd jarvis-devops-bot
+```
+
+### 2. Configure GitHub Actions Secrets
+
+Go to **Settings → Secrets and variables → Actions** and add:
+
+| Secret Name | Description |
+|---|---|
+| `BOT_TOKEN` | Your Telegram bot token |
+| `GEMINI_API_KEY` | Google Gemini API key |
+| `EC2_HOST` | Public IP of your EC2 instance |
+| `EC2_USER` | SSH username (e.g. `ubuntu`) |
+| `EC2_SSH_KEY` | Private SSH key (PEM file contents) |
+
+### 3. Provision Infrastructure with Terraform
+
+```bash
+cd terraform/
+terraform init
+terraform plan
+terraform apply
+```
+
+This creates: EC2 instance, security group (SSH only), IAM role for CloudWatch, and CloudWatch alarms.
+
+### 4. Run Locally
+
+```bash
+python -m venv venv
+source venv/bin/activate       # Linux/Mac
+.\venv\Scripts\activate        # Windows
+
+pip install -r requirements.txt
+
+echo "BOT_TOKEN=your_token" > .env
+echo "GEMINI_API_KEY=your_key" >> .env
+
+python bot.py
+```
+
+### 5. Run with Docker
+
+```bash
+docker build -t jarvis-bot .
+
+docker run -d \
+  -e BOT_TOKEN=your_token \
+  -e GEMINI_API_KEY=your_key \
+  --name jarvis-bot \
+  jarvis-bot
+```
+
+---
+
+## 🔄 CI/CD Pipeline
+
+```mermaid
+sequenceDiagram
+    participant Dev as 👨‍💻 Developer
+    participant GH as GitHub
+    participant GA as GitHub Actions
+    participant EC2 as AWS EC2
+
+    Dev->>GH: git push master
+    GH->>GA: Trigger workflow
+    GA->>EC2: SSH connection
+    GA->>EC2: git pull origin master
+    GA->>EC2: docker build -t jarvis-bot .
+    GA->>EC2: docker stop jarvis-bot
+    GA->>EC2: docker run -d jarvis-bot
+    EC2-->>GA: Container running ✅
+    GA-->>Dev: Pipeline success ✅
+```
+
+All secrets are stored in GitHub Actions Secrets — never in source code.
+
+---
+
+## 📊 Monitoring & Alerting
+
+```mermaid
+flowchart LR
+    A[📊 CloudWatch\nAlarm] -->|CPU > 80%| B[📢 SNS Topic]
+    B -->|Invoke| C[⚡ Lambda Function]
+    C -->|HTTP POST| D[📱 Telegram Alert]
+
+    style A fill:#FF9900,color:#fff
+    style B fill:#FF4F8B,color:#fff
+    style C fill:#FF9900,color:#fff
+    style D fill:#229ED9,color:#fff
+```
+
+**Alert flow:**
+
+1. CloudWatch monitors EC2 metrics — CPU, memory, disk
+2. Alarm triggers when threshold is crossed (e.g. CPU > 80% for 5 minutes)
+3. SNS topic receives the alarm notification
+4. Lambda function parses the payload and sends a Telegram message instantly
+
+**Example alert:**
+```
+🚨 ALARM: High CPU Usage
+Instance: jarvis-devops-bot
+Metric: CPUUtilization = 87%
+Threshold: > 80% for 5 minutes
+Time: 2026-05-12 18:30 UTC
+```
+
+---
+
+## 🔐 Security Practices
+
+- All secrets stored in GitHub Actions Secrets — never in source code
+- `.env` and Terraform state files excluded via `.gitignore`
+- SSH key-based authentication only — no password login
+- EC2 security group restricts inbound access to required ports only
+- IAM role follows least-privilege principle
+- Docker `HEALTHCHECK` monitors container health automatically
+
+---
+
+## 📸 Screenshots
+
+> Add screenshots after deployment to make the README more impactful
+
+| Feature | Screenshot |
+|---|---|
+| Bot responding in Telegram | *(add screenshot)* |
+| GitHub Actions pipeline run | *(add screenshot)* |
+| CloudWatch alarm dashboard | *(add screenshot)* |
+| Telegram alert notification | *(add screenshot)* |
+
+---
+
+## 🚀 Future Improvements
+
+- [ ] Use AWS Secrets Manager instead of GitHub Secrets for production
+- [ ] Add `docker-compose.yml` for local multi-container setup
+- [ ] Use ECR to store versioned Docker images
+- [ ] Add automated rollback if new container fails to start
+- [ ] Add unit tests with `pytest` and integrate into CI pipeline
+- [ ] Set up CloudWatch dashboard for visual metrics monitoring
+
+---
+
+## 👤 Author
+
+**Sahil**
+- GitHub: [@Sahilx987](https://github.com/Sahilx987)
+- LinkedIn: *(add your LinkedIn URL)*
+
+---
+
+## 📄 License
+
+This project is open for learning and portfolio purposes.
