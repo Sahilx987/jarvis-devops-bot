@@ -48,7 +48,7 @@ def main():
         )
     )
 
-    print("✅ Sahil DevOps Bot is running...")
+    logger.info("✅ DevOps Bot is running...")
 
     app.run_polling()
 
